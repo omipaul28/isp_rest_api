@@ -1,0 +1,52 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Isp {
+  isp_id          Int     @id @default(autoincrement())
+  isp_id_firebase String  @unique
+  ispName         String
+  ownerName       String
+  ispLogo         String?
+  phone           String  @unique
+  email           String  @unique
+  password        String
+}
+
+model Package {
+  package_id Int     @id @default(autoincrement())
+  isp_id     Int
+  name       String?
+  bandwidth  Int
+  price      Float
+}
+
+model Client {
+  customer_id     Int      @id @default(autoincrement())
+  autoName        String
+  name            String?
+  image           String?
+  gMapLattitude   Float?
+  gMapLongitude   Float?
+  manualLocation  String
+  phone           String
+  note            String?
+  package_id      Int
+  isp_id          Int
+  clientAddedDate DateTime @default(now())
+  isPaid          Boolean  @default(false)
+  isDue           Boolean  @default(false)
+  isOff           Boolean  @default(false)
+}

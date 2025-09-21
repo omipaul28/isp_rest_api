@@ -1,0 +1,23 @@
+{
+  "name": "isp",
+  "version": "1.0.0",
+  "description": "nothing",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^6.16.2",
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.2",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "firebase-admin": "^13.5.0",
+    "nodemon": "^3.1.10",
+    "prisma": "^6.16.2"
+  }
+}
