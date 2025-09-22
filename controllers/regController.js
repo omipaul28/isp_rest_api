@@ -6,8 +6,17 @@ import prisma from "../config/prismaConfig.js";
 
 export const register = async (req, res) => {
     const { ispName, ownerName, ispLogo, phone, email, password } = req.body;
+
     try {
-        const response = await axios.post(
+        if (!ispName || !ownerName || !phone || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields",
+                required: ["ispName", "ownerName", "phone", "email", "password"],
+            });
+        }
+
+        const firebaseResponse = await axios.post(
             `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
             {
                 email,
@@ -15,19 +24,47 @@ export const register = async (req, res) => {
                 returnSecureToken: true,
             }
         );
-        const { localId } = response.data;
-        const userData = {
-            isp_id_firebase: localId,
-            ispName,
-            ownerName,
-            ispLogo,
-            phone,
-            email,
-            password
-        };
-        const newUser = await prisma.isp.create({data: userData});
-        return res.status(201).json({ message: "Registration successful", user: newUser });
-}catch (error) {
-        return res.status(401).json({ message: "Registration failed", error: error.response?.data || error.message });
+
+        const { localId } = firebaseResponse.data;
+
+        const newUser = await prisma.isp.create({
+            data: {
+                isp_id_firebase: localId,
+                ispName,
+                ownerName,
+                ispLogo: ispLogo || null,
+                phone,
+                email,
+                password
+            },
+        });
+
+        return res.status(201).json({
+            success: true,
+            message: "Registration successful",
+            user: newUser,
+        });
+    } catch (error) {
+        console.error("Registration error:", error.response?.data || error.message);
+
+        if (error.response?.data?.error?.message) {
+            return res.status(400).json({
+                success: false,
+                message: "Firebase registration failed",
+                error: error.response.data.error.message,
+            });
+        }
+        if (error.code) {
+            return res.status(500).json({
+                success: false,
+                message: "Database error",
+                error: error.message,
+            });
+        }
+        return res.status(500).json({
+            success: false,
+            message: "Registration failed",
+            error: error.message,
+        });
     }
-}
+};
