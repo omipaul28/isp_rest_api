@@ -2,6 +2,7 @@ import axios from "axios";
 import dotenv from 'dotenv';
 dotenv.config();
 const FIREBASE_API_KEY = process.env.FIREBASE_KEY;
+import prisma from "../config/prismaConfig.js";
 
 export const login = async (req, res) => {
     const { email, password } = req.body;
@@ -15,8 +16,11 @@ export const login = async (req, res) => {
             }
         );
 
-        const { idToken, localId } = response.data;
-        req.session.user = { uid: localId, email };
+        const { localId } = response.data;
+        const user = await prisma.isp.findUnique({
+            where: { isp_id_firebase: localId }
+        });
+        req.session.user =user;
 
         return res.status(200).json({ message: "Login successful", user: req.session.user });
     } catch (error) {

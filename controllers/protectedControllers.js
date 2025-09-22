@@ -5,7 +5,7 @@ import axios from 'axios';
 const FIREBASE_KEY = process.env.FIREBASE_KEY;
 
 export const ispProfile = async (req, res) => {
-    const uid = req.session.user.uid;
+    const uid = req.session.user.isp_id_firebase;
     const user = await prisma.isp.findUnique({
         where: { isp_id_firebase: uid }
     });
@@ -18,7 +18,7 @@ export const ispProfile = async (req, res) => {
 
 export const ispProfileUpdate = async (req, res) => {
     try {
-        const uid = req.session.user.uid;
+        const uid = req.session.user.isp_id_firebase;
         if (!uid) {
             return res.status(401).json({
                 success: false,
