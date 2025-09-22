@@ -1,9 +1,12 @@
 import express from 'express';
 import authMiddleware from '../middlewares/authMiddleware.js';
-import { profile } from '../controllers/protectedControllers.js';
+import { ispProfile, ispProfileUpdate, deleteIsp} from '../controllers/protectedControllers.js';
 
 const protectedRouter = express.Router();
 
-protectedRouter.get('/profile', authMiddleware, profile);
+protectedRouter.get('/ispProfile', authMiddleware, ispProfile);
+protectedRouter.put('/ispProfile', authMiddleware, ispProfileUpdate);
+protectedRouter.delete('/ispProfile', deleteIsp);
+
 
 export default protectedRouter;

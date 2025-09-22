@@ -16,6 +16,17 @@ export const register = async (req, res) => {
             });
         }
 
+        const existingPhone = await prisma.isp.findUnique({
+            where: { phone },
+        });
+
+        if (existingPhone) {
+            return res.status(409).json({
+                success: false,
+                message: "Phone number already registered",
+            });
+        }
+
         const firebaseResponse = await axios.post(
             `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${FIREBASE_API_KEY}`,
             {
@@ -35,7 +46,7 @@ export const register = async (req, res) => {
                 ispLogo: ispLogo || null,
                 phone,
                 email,
-                password
+                password,
             },
         });
 
@@ -54,6 +65,7 @@ export const register = async (req, res) => {
                 error: error.response.data.error.message,
             });
         }
+
         if (error.code) {
             return res.status(500).json({
                 success: false,
@@ -61,6 +73,7 @@ export const register = async (req, res) => {
                 error: error.message,
             });
         }
+
         return res.status(500).json({
             success: false,
             message: "Registration failed",

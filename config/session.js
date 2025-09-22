@@ -7,7 +7,8 @@ export const sessionMiddle = session({
     cookie: {
         httpOnly: true,
         secure: false,
-        maxAge: 1000 * 60 * 60 * 24 * 7
+        //sameSite: '',
+        maxAge: 30 * 1000 * 60 * 60 * 24 * 7
     }
 });
 

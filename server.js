@@ -19,8 +19,10 @@ app.get('/', (req, res) => {
 
 // Routes
 app.use('/auth', authRoutes);
-app.use('/protected', protectedRoutes);
-app.use('/',regRoutes);
+app.use('/auth',regRoutes);
+// userGet and userUpdate
+app.use('/', protectedRoutes);
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
