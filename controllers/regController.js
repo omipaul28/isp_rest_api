@@ -22,9 +22,10 @@ export const register = async (req, res) => {
             ownerName,
             ispLogo,
             phone,
-            email
+            email,
+            password
         };
-        const newUser = await prisma.isp.create(userData);
+        const newUser = await prisma.isp.create({data: userData});
         return res.status(201).json({ message: "Registration successful", user: newUser });
 }catch (error) {
         return res.status(401).json({ message: "Registration failed", error: error.response?.data || error.message });
