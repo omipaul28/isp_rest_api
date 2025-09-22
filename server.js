@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 import {sessionMiddle} from './config/session.js';
 import authRoutes from './routes/authRoutes.js';
 import protectedRoutes from './routes/protectedRoutes.js';
+import regRoutes from './routes/regRoutes.js'
 dotenv.config();
 
 const app = express();
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 // Routes
 app.use('/auth', authRoutes);
 app.use('/protected', protectedRoutes);
+app.use('/',regRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
