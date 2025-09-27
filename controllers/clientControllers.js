@@ -181,3 +181,53 @@ export const deleteClient = async (req, res) => {
         });
     }
 }
+
+export const assignPackageToClient = async (req, res) => {
+    const { customer_id } = req.params;
+    const { package_id } = req.body;
+
+    try {
+        const client = await prisma.client.findUnique({
+            where: { customer_id: Number(customer_id) }
+        });
+
+        if (!client) {
+            return res.status(404).json({
+                success: false,
+                message: "Client not found"
+            });
+        }
+
+        const updatedClient = await prisma.client.update({
+            where: { customer_id: Number(customer_id) },
+            data: { package_id: package_id }
+        });
+        const packageDetails = await prisma.package.findUnique({
+            where: { package_id: package_id }
+        });
+        const createBill = await prisma.clientBillTable.create({
+            data: {
+                customer_id: Number(customer_id),
+                isp_id: client.isp_id,
+                billMonth: new Date().toLocaleString("default", { month: "long" }),
+                billYear: new Date().getFullYear().toString(),
+                billAmount: packageDetails ? packageDetails.price : 0,
+                dueAmount: packageDetails ? packageDetails.price : 0,
+                createdAt: new Date()
+            }
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Package assigned to client successfully",
+            client: updatedClient,
+            bill: createBill
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: error.message
+        });
+    }
+};
