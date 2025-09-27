@@ -1,42 +1,44 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import {sessionMiddle} from './config/session.js';
-import authRoutes from './routes/authRoutes.js';
-import protectedRoutes from './routes/protectedRoutes.js';
-import regRoutes from './routes/regRoutes.js'
-import clientRouter from './routes/clientRoutes.js';
-import packageRouter from './routes/packageRoutes.js';
-import cors from 'cors';
+import express from "express";
+import dotenv from "dotenv";
+import { sessionMiddle } from "./config/session.js";
+import authRoutes from "./routes/authRoutes.js";
+import protectedRoutes from "./routes/protectedRoutes.js";
+import regRoutes from "./routes/regRoutes.js";
+import clientRouter from "./routes/clientRoutes.js";
+import packageRouter from "./routes/packageRoutes.js";
+import cors from "cors";
 dotenv.config();
 
 const app = express();
 app.use(cors());
 
-app.use(cors({
-    origin: 'http://localhost:5173'
-}));
+app.use(
+  cors({
+    origin: ["http://localhost:5174", "http://localhost:5173"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(sessionMiddle);
 
-
 const PORT = process.env.PORT || 3000;
 
-app.get('/', (req, res) => {
-    res.send('Hello, World!');
+app.get("/", (req, res) => {
+  res.send("Hello, World!");
 });
 
 // Routes
-app.use('/auth', authRoutes);
-app.use('/auth',regRoutes);
+app.use("/auth", authRoutes);
+app.use("/auth", regRoutes);
 // userGet and userUpdate
-app.use('/', protectedRoutes);
+app.use("/", protectedRoutes);
 // client routes
-app.use('/client', clientRouter);
+app.use("/client", clientRouter);
 // package routes
-app.use('/package', packageRouter);
+app.use("/package", packageRouter);
 
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 //end 2
