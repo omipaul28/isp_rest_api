@@ -53,3 +53,16 @@ model Client {
   isDue           Boolean  @default(false)
   isOff           Boolean  @default(false)
 }
+
+model ClientBillTable{
+  bill_id        Int      @id @default(autoincrement())
+  customer_id    Int
+  isp_id         Int
+  billMonth     String
+  billYear      String
+  billAmount    Float
+  dueAmount     Float?
+  isPaid        Boolean  @default(false)
+  paidDate      DateTime?
+  createdAt     DateTime @default(now())
+}
